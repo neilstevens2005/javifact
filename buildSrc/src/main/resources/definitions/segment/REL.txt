@@ -1,0 +1,18 @@
+      REL    RELATIONSHIP
+
+      Function: To identify the direct relationship between the
+                data/information contained in one segment and the
+                data/information contained in one or more other
+                segments.
+
+010   9141  RELATIONSHIP QUALIFIER                                M  an..3
+
+020   C941  RELATIONSHIP                                          C  
+      9143   Relationship, coded                                  C  an..3
+      1131   Code list qualifier                                  C  an..3
+      3055   Code list responsible agency, coded                  C  an..3
+      9142   Relationship                                         C  an..35
+
+
+
+ 

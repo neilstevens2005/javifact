@@ -1,0 +1,15 @@
+      PGI    PRODUCT GROUP INFORMATION
+
+      Function: To indicate the group in which a product belongs.
+
+010   5379  PRODUCT GROUP TYPE, CODED                             M  an..3
+
+020   C288  PRODUCT GROUP                                         C  
+      5389   Product group, coded                                 C  an..3
+      1131   Code list qualifier                                  C  an..3
+      3055   Code list responsible agency, coded                  C  an..3
+      5388   Product group                                        C  an..35
+
+
+
+ 

@@ -1,0 +1,19 @@
+      MKS    MARKET/SALES CHANNEL INFORMATION
+
+      Function: To specify to which market and/or through which sales
+                distribution channel and/or for which end-use the
+                sales of product/service have been made or are given
+                as forecast.
+
+010   7293  SECTOR/SUBJECT IDENTIFICATION QUALIFIER               M  an..3
+
+020   C332  SALES CHANNEL IDENTIFICATION                          M  
+      3496   Sales channel identifier                             M  an..17
+      1131   Code list qualifier                                  C  an..3
+      3055   Code list responsible agency, coded                  C  an..3
+
+030   1229  ACTION REQUEST/NOTIFICATION, CODED                    C  an..3
+
+
+
+ 

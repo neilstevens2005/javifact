@@ -1,0 +1,15 @@
+      EQA    ATTACHED EQUIPMENT
+
+      Function: To specify attached or related equipment.
+
+010   8053  EQUIPMENT QUALIFIER                                   M  an..3
+
+020   C237  EQUIPMENT IDENTIFICATION                              C  
+      8260   Equipment identification number                      C  an..17
+      1131   Code list qualifier                                  C  an..3
+      3055   Code list responsible agency, coded                  C  an..3
+      3207   Country, coded                                       C  an..3
+
+
+
+ 

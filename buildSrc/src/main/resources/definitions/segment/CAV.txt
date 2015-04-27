@@ -1,0 +1,14 @@
+      CAV    CHARACTERISTIC VALUE
+
+      Function: To provide the value of a characteristic.
+
+010   C889  CHARACTERISTIC VALUE                                  M  
+      7111   Characteristic value, coded                          C  an..3
+      1131   Code list qualifier                                  C  an..3
+      3055   Code list responsible agency, coded                  C  an..3
+      7110   Characteristic value                                 C  an..35
+      7110   Characteristic value                                 C  an..35
+
+
+
+ 

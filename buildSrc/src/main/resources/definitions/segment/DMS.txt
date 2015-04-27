@@ -1,0 +1,14 @@
+      DMS    DOCUMENT/MESSAGE SUMMARY
+
+      Function: To specify summary information relating to the
+                document/message.
+
+010   1004  DOCUMENT/MESSAGE NUMBER                               C  an..35
+
+020   1001  DOCUMENT/MESSAGE NAME, CODED                          C  an..3
+
+030   7240  TOTAL NUMBER OF ITEMS                                 C  n..15
+
+
+
+ 

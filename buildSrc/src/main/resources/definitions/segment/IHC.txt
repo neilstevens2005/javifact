@@ -1,0 +1,16 @@
+      IHC    PERSON CHARACTERISTIC
+
+      Function: To specify characteristics of a person such as ethnic
+                origin.
+
+010   3289  PERSON CHARACTERISTIC QUALIFIER                       M  an..3
+
+020   C818  PERSON INHERITED CHARACTERISTIC DETAILS               C  
+      3311   Person inherited characteristic identification       C  an..8
+      1131   Code list qualifier                                  C  an..3
+      3055   Code list responsible agency, coded                  C  an..3
+      3310   Person inherited characteristic                      C  an..70
+
+
+
+ 

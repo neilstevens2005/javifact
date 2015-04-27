@@ -1,0 +1,14 @@
+      STG    STAGES
+
+      Function: To provide information related to the kind of stage in
+                a process, the number of stages and the actual stage.
+
+010   9421  STAGES QUALIFIER                                      M  an..3
+
+020   6426  NUMBER OF STAGES                                      C  n..2
+
+030   6428  ACTUAL STAGE COUNT                                    C  n..2
+
+
+
+ 

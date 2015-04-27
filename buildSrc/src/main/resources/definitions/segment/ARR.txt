@@ -1,0 +1,20 @@
+      ARR    ARRAY INFORMATION
+
+      Function: To contain the data in a array.
+
+          Note: The composite C770 - array cell details - occurs 100
+                times in the segment.
+                
+                The component 9424 - array cell information - occurs
+                100 times in the composite C770.
+
+010   C778  POSITION IDENTIFICATION                               C  
+      7164   Hierarchical id. number                              C  an..12
+      1050   Sequence number                                      C  an..6
+
+020   C770  ARRAY CELL DETAILS                                    C  
+      9424   Array cell information                               C  an..35
+
+
+
+ 

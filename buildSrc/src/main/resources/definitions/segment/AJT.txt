@@ -1,0 +1,11 @@
+      AJT    ADJUSTMENT DETAILS
+
+      Function: To identify the reason for an adjustment.
+
+010   4465  ADJUSTMENT REASON, CODED                              M  an..3
+
+020   1082  LINE ITEM NUMBER                                      C  n..6
+
+
+
+ 

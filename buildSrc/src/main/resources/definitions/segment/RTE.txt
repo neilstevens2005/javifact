@@ -1,0 +1,13 @@
+      RTE    RATE DETAILS
+
+      Function: To specify rate information.
+
+010   C128  RATE DETAILS                                          M  
+      5419   Rate type qualifier                                  M  an..3
+      5420   Rate per unit                                        M  n..15
+      5284   Unit price basis                                     C  n..9
+      6411   Measure unit qualifier                               C  an..3
+
+
+
+ 

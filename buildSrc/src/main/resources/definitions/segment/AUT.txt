@@ -1,0 +1,12 @@
+      AUT    AUTHENTICATION RESULT
+
+      Function: To specify results of the application of an
+                authentification procedure.
+
+010   9280  VALIDATION RESULT                                     M  an..35
+
+020   9282  VALIDATION KEY IDENTIFICATION                         C  an..35
+
+
+
+ 

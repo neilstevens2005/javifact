@@ -1,0 +1,24 @@
+apply plugin: 'java'
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+task generateSources {
+    println "generating sources"
+    java.nio.file.Path segmentDefinitionDir = file("buildSrc/src/main/resources/definitions/segment").toPath()
+    java.nio.file.Path messageDefinitionDir = file("buildSrc/src/main/resources/definitions/message").toPath()
+    java.nio.file.Path generatedSourceDir = file("build/generated-src/main/java").toPath()
+    org.javifact.buildsrc.generator.SourceGenerator sourceGenerator =
+            new org.javifact.buildsrc.generator.SourceGenerator(segmentDefinitionDir, messageDefinitionDir, generatedSourceDir)
+    sourceGenerator.generate()
+}
+
+compileJava {
+    dependsOn('generateSources')
+}

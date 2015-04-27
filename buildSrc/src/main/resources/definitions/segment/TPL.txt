@@ -1,0 +1,16 @@
+      TPL    TRANSPORT PLACEMENT
+
+      Function: To specify placement of goods or equipment in relation
+                to the transport used. The segment serves as a pointer
+                to the TDT segment group.
+
+010   C222  TRANSPORT IDENTIFICATION                              M  
+      8213   Id. of means of transport identification             C  an..9
+      1131   Code list qualifier                                  C  an..3
+      3055   Code list responsible agency, coded                  C  an..3
+      8212   Id. of the means of transport                        C  an..35
+      8453   Nationality of means of transport, coded             C  an..3
+
+
+
+ 
