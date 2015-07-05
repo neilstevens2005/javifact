@@ -6,6 +6,7 @@ repositories {
 }
 
 dependencies {
+    compile 'com.google.guava:guava:18.0'
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
 
@@ -13,10 +14,24 @@ task generateSources {
     println "generating sources"
     java.nio.file.Path segmentDefinitionDir = file("buildSrc/src/main/resources/definitions/segment").toPath()
     java.nio.file.Path messageDefinitionDir = file("buildSrc/src/main/resources/definitions/message").toPath()
-    java.nio.file.Path generatedSourceDir = file("build/generated-src/main/java").toPath()
+    java.nio.file.Path generatedSourceDir = file("${buildDir}/generated-src/java").toPath()
     org.javifact.buildsrc.generator.SourceGenerator sourceGenerator =
             new org.javifact.buildsrc.generator.SourceGenerator(segmentDefinitionDir, messageDefinitionDir, generatedSourceDir)
     sourceGenerator.generate()
+}
+
+sourceSets{
+    generatedSrcDep{
+        java.srcDir file('src/generatedSrcDep/java')
+        compileClasspath = sourceSets.main.compileClasspath
+    }
+    generatedSrc{
+        java.srcDir file("${buildDir}/generated-src/java")
+        compileClasspath = sourceSets.generatedSrcDep.output
+    }
+    main{
+        compileClasspath += sourceSets.generatedSrc.output
+    }
 }
 
 compileJava {
