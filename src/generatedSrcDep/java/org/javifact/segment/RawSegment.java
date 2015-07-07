@@ -2,6 +2,7 @@ package org.javifact.segment;
 
 //import com.google.common.collect.Lists;
 
+import java.io.Reader;
 import java.lang.String;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +74,29 @@ public class RawSegment implements Segment {
                 && terminator != DataElementComponentValueAndTerminator.Terminator.END_OF_STRING);
     }
 
+    /*public RawSegment(EdifactSeparators edifactSeparators, Reader edifactData) {
+        segmentCode = edifactData.substring(0, 3);
+
+        DataElementComponentValueAndTerminator.Terminator terminator;
+        int dataIndex = 0;
+        int componentIndex = 0;
+        int offset = 4;
+        do {
+            DataElementComponentValueAndTerminator dataElementComponentValueAndTerminator = readNextDataElement(edifactData, offset, edifactSeparators);
+            String value = toUnescapedValue(dataElementComponentValueAndTerminator.getValue(), edifactSeparators);
+            setComponentDataElement(dataIndex, componentIndex, value);
+            terminator = dataElementComponentValueAndTerminator.getTerminator();
+            if (terminator == DataElementComponentValueAndTerminator.Terminator.DATA_SEPARATOR) {
+                dataIndex++;
+                componentIndex = 0;
+            } else if (terminator == DataElementComponentValueAndTerminator.Terminator.COMPONENT_SEPARATOR) {
+                componentIndex++;
+            }
+            offset = dataElementComponentValueAndTerminator.getEndIndex() + 1; // +1 to move past separator
+        } while (terminator != DataElementComponentValueAndTerminator.Terminator.SEGMENT_SEPARATOR
+                && terminator != DataElementComponentValueAndTerminator.Terminator.END_OF_STRING);
+    }*/
+
     private DataElementComponentValueAndTerminator readNextDataElement(String edifactData, int offset, EdifactSeparators edifactSeparators) {
         //StringBuilder dataBuilder = new StringBuilder();
         boolean terminatorFound = false;
@@ -132,7 +156,7 @@ public class RawSegment implements Segment {
         }
 
         List<String> dataElementsComponentsForTheDataElement = componentDataElements.get(dataElementIndex);
-        while (componentIndex >= dataElementsComponentsForTheDataElement.size()) {
+        while (componentIndex > dataElementsComponentsForTheDataElement.size()) {
             dataElementsComponentsForTheDataElement.add(null);
         }
 
@@ -151,9 +175,8 @@ public class RawSegment implements Segment {
         for (List<String> currentDataElement : componentDataElements) {
             char dataElementSeparator = edifactSeparators.getDataElementSeparator();
             edifactStringBuilder.append(dataElementSeparator);
-            int finalComponentIndex = currentDataElement.size() - 1;
             for (int componentIndex = 0; componentIndex < currentDataElement.size(); componentIndex++) {
-                if (componentIndex != 0 && componentIndex != finalComponentIndex) {
+                if (componentIndex != 0) {
                     char componentDataElementSeparator = edifactSeparators.getComponentDataElementSeparator();
                     edifactStringBuilder.append(componentDataElementSeparator);
                 }

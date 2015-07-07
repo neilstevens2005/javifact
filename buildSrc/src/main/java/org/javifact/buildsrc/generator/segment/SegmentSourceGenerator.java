@@ -7,6 +7,7 @@ import org.javifact.buildsrc.generator.CommonSourceGenerator;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaDocSource;
+import org.jboss.forge.roaster.model.source.MethodSource;
 
 import java.util.*;
 
@@ -41,6 +42,20 @@ public class SegmentSourceGenerator {
         String classJavaDocText = buildClassJavaDocText(segmentDefinition);
         classJavaDoc.setFullText(classJavaDocText);
 
+        // Add import and constructors
+        segmentClass.addImport("org.javifact.segment.RawSegment");
+        MethodSource<JavaClassSource> noArgsConstructor = segmentClass.addMethod();
+        noArgsConstructor.setConstructor(true);
+        noArgsConstructor.setPublic();
+        noArgsConstructor.setBody("");
+
+        // TODO: check segment code and throw if invalid
+        MethodSource<JavaClassSource> rawSegmentConstructor = segmentClass.addMethod();
+        rawSegmentConstructor.setConstructor(true);
+        rawSegmentConstructor.setPublic();
+        rawSegmentConstructor.addParameter("RawSegment", "rawSegment");
+        StringBuilder rawSegmentConstructorBodyBuilder = new StringBuilder();
+
         List<DataElementDefinition> dataElementDefinitions = segmentDefinition.getDataElements();
         List<String> dataElementNames = getDataElementNames(dataElementDefinitions);
         Map<DataElementDefinition, JavaClassSource> nonUniqueCompositeDataElementsMaps = new HashMap<>();
@@ -51,17 +66,29 @@ public class SegmentSourceGenerator {
                 String dataElementName = dataElementDefinition.getName();
                 String propertyName;
                 String formattedName;
+                String setterMethodText;
                 if (Collections.frequency(dataElementNames, dataElementName) == 1) {
                     propertyName = commonSourceGenerator.toPropertyName(dataElementName);
                     formattedName = commonSourceGenerator.toFormattedName(dataElementName);
+                    setterMethodText = commonSourceGenerator.toSetterMethodText(dataElementName);
                 } else {
                     List<String> dataElementNamesAlreadyAdded = dataElementNames.subList(0, dataElementIndex);
                     int propertyIndex = Collections.frequency(dataElementNamesAlreadyAdded, dataElementName);
                     propertyName = commonSourceGenerator.toPropertyName(dataElementName, propertyIndex);
-                     formattedName = commonSourceGenerator.toFormattedName(dataElementName, propertyIndex);
+                    formattedName = commonSourceGenerator.toFormattedName(dataElementName, propertyIndex);
+                    setterMethodText = commonSourceGenerator.toSetterMethodText(dataElementName, propertyIndex);;
                 }
                 commonSourceGenerator.addStringPropertyWithJavaDoc(segmentClass, propertyName, formattedName);
+
+                // append constructor implementation
+                rawSegmentConstructorBodyBuilder.append(setterMethodText);
+                rawSegmentConstructorBodyBuilder.append("(rawSegment.getComponentDataElement(");
+                rawSegmentConstructorBodyBuilder.append(dataElementIndex);
+                rawSegmentConstructorBodyBuilder.append(", 0));\n");
+
+                // TODO: append to toEdifact string body builder
             } else {
+                // TODO: append to rawData constructor body builder
                 String dataElementName = dataElementDefinition.getName();
                 if (Collections.frequency(dataElementNames, dataElementName) == 1) {
                     JavaClassSource dataElementClass = buildCompositeDataElementClass(dataElementDefinition);
@@ -88,6 +115,9 @@ public class SegmentSourceGenerator {
                 }
             }
         }
+        String rawSegmentConstructorBody = rawSegmentConstructorBodyBuilder.toString();
+        System.out.println(rawSegmentConstructorBody);
+        rawSegmentConstructor.setBody(rawSegmentConstructorBody);
 
         return segmentClass.toString();
     }

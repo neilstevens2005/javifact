@@ -34,8 +34,38 @@ public class CommonSourceGenerator {
     }
 
     public String toPropertyName(String name) {
+        return toPropertyName(name, false);
+    }
+
+    public String toSetterMethodText(String name) {
+        StringBuilder setterNameBuilder = new StringBuilder("set");
+        setterNameBuilder.append(toPropertyName(name, true));
+        return setterNameBuilder.toString();
+    }
+
+    public String toSetterMethodText(String name, int index) {
+        StringBuilder setterNameBuilder = new StringBuilder("set");
+        setterNameBuilder.append(toPropertyName(name, true));
+        setterNameBuilder.append(index + 1);
+        return setterNameBuilder.toString();
+    }
+
+    public String toGetterMethodText(String name) {
+        StringBuilder setterNameBuilder = new StringBuilder("get");
+        setterNameBuilder.append(toPropertyName(name, true));
+        return setterNameBuilder.toString();
+    }
+
+    public String toGetterMethodText(String name, int index) {
+        StringBuilder setterNameBuilder = new StringBuilder("get");
+        setterNameBuilder.append(toPropertyName(name, true));
+        setterNameBuilder.append(index + 1);
+        return setterNameBuilder.toString();
+    }
+
+    private String toPropertyName(String name, boolean capitaliseFirstLetter) {
         StringBuilder propertyNameBuilder = new StringBuilder();
-        boolean capitaliseNext = false;
+        boolean capitaliseNext = capitaliseFirstLetter;
         for (int charIndex = 0; charIndex < name.length(); charIndex++) {
             char nameChar = name.charAt(charIndex);
             if (nameChar == ' ' || nameChar == '/') {
