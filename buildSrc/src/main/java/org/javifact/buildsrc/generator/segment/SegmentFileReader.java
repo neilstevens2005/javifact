@@ -69,7 +69,7 @@ public class SegmentFileReader {
                         }
                         functionBuilder.append(segmentHeaderLineParser.getText());
                     } else if (functionBuilder.length() > 0){
-                        segmentDefinition.setTitle(titleBuilder.toString());
+                        segmentDefinition.setTitle(titleBuilder.toString().trim());
                         segmentDefinition.setFunction(functionBuilder.toString());
                         finishedReadingheader = true;
                     }

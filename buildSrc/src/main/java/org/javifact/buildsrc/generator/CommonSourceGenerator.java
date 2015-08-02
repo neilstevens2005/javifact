@@ -1,9 +1,11 @@
 package org.javifact.buildsrc.generator;
 
 import org.apache.commons.lang3.text.WordUtils;
+import org.apache.tools.ant.taskdefs.Java;
 import org.javifact.buildsrc.GeneralUtils;
 import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.Property;
+import org.jboss.forge.roaster.model.source.FieldSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
 
@@ -115,7 +117,20 @@ public class CommonSourceGenerator {
     public void addCustomTypePropertyWithJavaDoc(JavaClassSource javaClassSource, String propertyName, String formattedName, JavaType<?> javaType) {
         javaClassSource.addProperty(javaType, propertyName);
         addJavaDocForProperty(javaClassSource, propertyName, formattedName);
-    }
+        //TODO: Change to final property with a getter
+        /*StringBuilder fieldTextBuilder = new StringBuilder();
+        fieldTextBuilder.append("private final " );
+        fieldTextBuilder.append(javaType.getCanonicalName());
+        fieldTextBuilder.append(' ');
+        fieldTextBuilder.append(propertyName);
+        fieldTextBuilder.append(" = new ");
+        fieldTextBuilder.append(javaType.getCanonicalName());
+        fieldTextBuilder.append("();");
+        String fieldText = fieldTextBuilder.toString();
+        FieldSource<JavaClassSource> fieldSource = javaClassSource.addField(fieldText);*/
+
+
+     }
 
     private void addJavaDocForProperty(JavaClassSource javaClassSource, String propertyName, String formattedName) {
         // Add Javadoc for get method

@@ -19,7 +19,7 @@ public class SegmentHeaderLineParser {
         } else if (line.trim().startsWith("Function: ")  || line.startsWith("                ") || line.trim().startsWith("| Function: ")) {
             titleLine = false;
             functionLine = true;
-            text = line.substring(17).trim();
+            text = line.substring(16).trim();
         } else {
             titleLine = true;
             functionLine = false;
