@@ -5,6 +5,8 @@ import org.javifact.segment.RawSegment;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by neil on 02/08/15.
@@ -57,17 +59,45 @@ public class SegmentReader extends Reader {
     }
 
     public static void main (String[] args) throws IOException, ClassNotFoundException {
-        String data = "UNB+IATB:1+6XPPC+LHPPC+940101:0950+1'UNH+1+PAORES:93:1:IA'MSG+1:45'IFT+3+XYZCOMPANY AVAILABILITY'ERC+A7V:1:AMD'";
+        //String data = "UNB+IATB:1+6XPPC+LHPPC+940101:0950+1'UNH+1+PAORES:93:1:IA'MSG+1:45'IFT+3+XYZCOMPANY AVAILABILITY'ERC+A7V:1:AMD'";
         //String data = "MSG+1:45'IFT+3+XYZCOMPANY AVAILABILITY'ERC+A7V:1:AMD'";
+        String data = "UNB+UNOA:1+005435656:1+006415160:1+060515:1434+00000000000778'\n" +
+                "UNH+00000000000117+INVOIC:D:97B:UN'\n" +
+                "BGM+380+342459+9'\n" +
+                "DTM+3:20060515:102'\n" +
+                "RFF+ON:521052'\n" +
+                "NAD+BY+792820524::16++CUMMINS MID-RANGE ENGINE PLANT'\n" +
+                "NAD+SE+005435656::16++GENERAL WIDGET COMPANY'\n" +
+                "CUX+1:USD'\n" +
+                "LIN+1++157870:IN'\n" +
+                "IMD+F++:::WIDGET'\n" +
+                "QTY+47:1020:EA'\n" +
+                "ALI+US'\n" +
+                "MOA+203:1202.58'\n" +
+                "PRI+INV:1.179'\n" +
+                "LIN+2++157871:IN'\n" +
+                "IMD+F++:::DIFFERENT WIDGET'\n" +
+                "QTY+47:20:EA'\n" +
+                "ALI+JP'\n" +
+                "MOA+203:410'\n" +
+                "PRI+INV:20.5'\n" +
+                "UNS+S'\n" +
+                "MOA+39:2137.58'\n" +
+                "ALC+C+ABG'\n" +
+                "MOA+8:525'\n" +
+                "UNT+23+00000000000117'\n" +
+                "UNZ+1+00000000000778'";
         InputStream inputStream = new ByteArrayInputStream(data.getBytes());
         Reader reader = new InputStreamReader(inputStream);
         SegmentReader rawSegmentReader = new SegmentReader(reader);
-        Object rs1 = rawSegmentReader.readSegment();
-        Object rs2 = rawSegmentReader.readSegment();
-        Object rs3 = rawSegmentReader.readSegment();
-        Object rs4 = rawSegmentReader.readSegment();
-        Object rs5 = rawSegmentReader.readSegment();
-        Object rs6 = rawSegmentReader.readSegment();
+        List<Object> segments = new ArrayList<Object>();
+        try {
+            while (true) {
+                segments.add(rawSegmentReader.readSegment());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         System.out.println("done");
     }
 }

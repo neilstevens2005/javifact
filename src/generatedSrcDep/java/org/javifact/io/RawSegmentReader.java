@@ -50,7 +50,7 @@ public class RawSegmentReader extends Reader {
             }
             segmentDataBuilder.append(charData);
         } while (dataRead != edifactSeparators.getSegmentTerminator() && !escaped);
-        String segmentData = segmentDataBuilder.toString();
+        String segmentData = segmentDataBuilder.toString().trim();
         return new RawSegment(edifactSeparators, segmentData);
     }
 
