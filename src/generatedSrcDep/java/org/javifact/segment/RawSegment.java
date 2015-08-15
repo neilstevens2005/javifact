@@ -5,12 +5,13 @@ package org.javifact.segment;
 import java.io.Reader;
 import java.lang.String;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
  * Created by neil on 28/04/15.
  */
-public class RawSegment implements Segment {
+public class RawSegment extends AbstractSegment implements Segment {
 
     static private class DataElementComponentValueAndTerminator {
         private enum Terminator {
@@ -43,7 +44,7 @@ public class RawSegment implements Segment {
         }
     }
 
-    private String segmentCode;
+    private String segmentType;
     //private final static List<String> SINGLE_EMPTY_STRING_LIST = Lists.newArrayList("");
     private final List<List<String>> componentDataElements = new ArrayList<>();
 
@@ -52,7 +53,7 @@ public class RawSegment implements Segment {
     }
 
     public RawSegment(EdifactSeparators edifactSeparators, String edifactData) {
-        segmentCode = edifactData.substring(0, 3);
+        segmentType = edifactData.substring(0, 3);
 
         DataElementComponentValueAndTerminator.Terminator terminator;
         int dataIndex = 0;
@@ -131,12 +132,13 @@ public class RawSegment implements Segment {
 
     }
 
-    public String getSegmentCode() {
-        return segmentCode;
+    @Override
+    public String getSegmentType() {
+        return segmentType;
     }
 
-    public void setSegmentCode(String segmentCode) {
-        this.segmentCode = segmentCode;
+    public void setSegmentType(String segmentType) {
+        this.segmentType = segmentType;
     }
 
     public String getComponentDataElement(int dataElementIndex, int componentIndex) {
@@ -160,7 +162,7 @@ public class RawSegment implements Segment {
             dataElementsComponentsForTheDataElement.add(null);
         }
 
-        if (value == "") {
+        if (value == null || value.equals("")) {
             dataElementsComponentsForTheDataElement.add(null);
         } else {
             dataElementsComponentsForTheDataElement.add(value);
@@ -169,9 +171,15 @@ public class RawSegment implements Segment {
 
 
     @Override
+    protected RawSegment toRawSegment() {
+        return this;
+    }
+
+    @Override
     public String toEdifactString(EdifactSeparators edifactSeparators) {
+        simplyfyComponentDataElements();
         StringBuilder edifactStringBuilder = new StringBuilder();
-        edifactStringBuilder.append(segmentCode);
+        edifactStringBuilder.append(segmentType);
         for (List<String> currentDataElement : componentDataElements) {
             char dataElementSeparator = edifactSeparators.getDataElementSeparator();
             edifactStringBuilder.append(dataElementSeparator);
@@ -187,6 +195,8 @@ public class RawSegment implements Segment {
                 }
             }
         }
+        char segmentTerminator = edifactSeparators.getSegmentTerminator();
+        edifactStringBuilder.append(segmentTerminator);
         return edifactStringBuilder.toString();
     }
 
@@ -224,11 +234,43 @@ public class RawSegment implements Segment {
         return escappedValueBuilder.toString();
     }
 
+
     public static void main(String[] args) {
         EdifactSeparators edifactSeparators = new EdifactSeparators.Builder().build();
         RawSegment rawSegment = new RawSegment(edifactSeparators, "UNB+IATB:1+6XPPC+LHPPC+940101:0950+1'");
         System.out.println("parsed");
         System.out.println(rawSegment.toEdifactString(edifactSeparators));
+    }
+
+    private void simplyfyComponentDataElements() {
+        componentDataElements.stream().forEach(RawSegment::removeTrailingNullElements);
+        removeTrailingEmptyCollections(componentDataElements);
+    }
+
+    // TODO: Move to utility class
+    private static void removeTrailingNullElements(List<?> list) {
+        boolean elementRemoved;
+        do {
+            if (!list.isEmpty() && list.get(list.size() - 1) == null) {
+                list.remove(list.size() - 1);
+                elementRemoved = true;
+            } else {
+                elementRemoved = false;
+            }
+        } while (elementRemoved);
+    }
+
+    // TODO: move to utility class
+    private static void removeTrailingEmptyCollections(List<? extends Collection<?>> list) {
+        boolean elementRemoved;
+        do {
+            if (!list.isEmpty() && list.get(list.size() - 1).isEmpty()) {
+                list.remove(list.size() - 1);
+                elementRemoved = true;
+            } else {
+                elementRemoved = false;
+            }
+        } while (elementRemoved);
     }
 
 }

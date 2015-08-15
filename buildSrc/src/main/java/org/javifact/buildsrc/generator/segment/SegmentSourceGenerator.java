@@ -36,6 +36,8 @@ public class SegmentSourceGenerator {
         segmentClass.setPackage(PACKAGE);
         String segmentClassName = segmentDefinition.getName().toUpperCase();
         segmentClass.setName(segmentClassName);
+        segmentClass.addInterface(PACKAGE + ".Segment");
+        segmentClass.setSuperType(PACKAGE + ".AbstractSegment");
 
         // Add JavaDoc
         JavaDocSource<JavaClassSource> classJavaDoc = segmentClass.getJavaDoc();
@@ -73,9 +75,23 @@ public class SegmentSourceGenerator {
         rawSegmentConstructor.getJavaDoc().setText(rawSegmentConstructorJavaDocText);
         rawSegmentConstructor.getJavaDoc().addTagValue("@param", "rawSegment The raw segment");
 
+        // create getSegmentType method
+        MethodSource<JavaClassSource> getSegmentType = segmentClass.addMethod();
+        getSegmentType.setPublic();
+        getSegmentType.setName("getSegmentType");
+        getSegmentType.setReturnType(String.class);
+        StringBuilder getSegmentTypeBodyBuilder = new StringBuilder();
+        getSegmentTypeBodyBuilder.append("return \"");
+        getSegmentTypeBodyBuilder.append(segmentDefinition.getName().toUpperCase());
+        getSegmentTypeBodyBuilder.append("\";\n");
+        getSegmentType.setBody(getSegmentTypeBodyBuilder.toString());
+        getSegmentType.addAnnotation(Override.class);
 
         // Create toRawSegment method
         StringBuilder toRawSegmentBodyBuilder = new StringBuilder("RawSegment rawSegment = new RawSegment();\n");
+        toRawSegmentBodyBuilder.append("rawSegment.setSegmentType(\"");
+        toRawSegmentBodyBuilder.append(segmentDefinition.getName().toUpperCase());
+        toRawSegmentBodyBuilder.append("\");\n");
 
 
         List<DataElementDefinition> dataElementDefinitions = segmentDefinition.getDataElements();
@@ -144,7 +160,8 @@ public class SegmentSourceGenerator {
                 }
                 appendRawSegmentConstructorBodyBuilder(rawSegmentConstructorBodyBuilder, dataElementIndex, propertyName, dataElementDefinition);
                 appendToRawSegmentBodyBuilder(toRawSegmentBodyBuilder, dataElementIndex, propertyName, dataElementDefinition);
-                commonSourceGenerator.addCustomTypePropertyWithJavaDoc(segmentClass, propertyName, formattedName, dataElementClass);
+                //commonSourceGenerator.addCustomTypePropertyWithJavaDoc(segmentClass, propertyName, formattedName, dataElementClass);
+                commonSourceGenerator.addFinalFieldWithGetter(segmentClass, propertyName, formattedName, dataElementClass);
             }
         }
         String rawSegmentConstructorBody = rawSegmentConstructorBodyBuilder.toString();
@@ -156,8 +173,9 @@ public class SegmentSourceGenerator {
         MethodSource<JavaClassSource> toRawSegmentmethod = segmentClass.addMethod();
         toRawSegmentmethod.setName("toRawSegment");
         toRawSegmentmethod.setReturnType("RawSegment");
-        toRawSegmentmethod.setPublic();
+        toRawSegmentmethod.setProtected();
         toRawSegmentmethod.setBody(toRawSegmentBody);
+        toRawSegmentmethod.addAnnotation(Override.class);
 
         return segmentClass.toString();
     }
@@ -220,12 +238,12 @@ public class SegmentSourceGenerator {
             int dataElementIndex, String dataElementPropertyName, DataElementDefinition dataElementDefinition) {
         String dataElementName = dataElementDefinition.getName();
         String dataElementClassName = commonSourceGenerator.toClassName(dataElementName);
-        rawSegmentConstructorBodyBuilder.append(dataElementClassName);
+        /*rawSegmentConstructorBodyBuilder.append(dataElementClassName);
         rawSegmentConstructorBodyBuilder.append(' ');
         rawSegmentConstructorBodyBuilder.append(dataElementPropertyName);
         rawSegmentConstructorBodyBuilder.append(" = new ");
         rawSegmentConstructorBodyBuilder.append(dataElementClassName);
-        rawSegmentConstructorBodyBuilder.append("();\n");
+        rawSegmentConstructorBodyBuilder.append("();\n");*/
 
         List<String> dataElementComponentNames = dataElementDefinition.getComponentNames();
         for (int dataElementComponentIndex = 0; dataElementComponentIndex < dataElementComponentNames.size(); dataElementComponentIndex++) {
@@ -249,18 +267,18 @@ public class SegmentSourceGenerator {
 
         }
 
-        rawSegmentConstructorBodyBuilder.append("this.");
+        /*rawSegmentConstructorBodyBuilder.append("this.");
         rawSegmentConstructorBodyBuilder.append(dataElementPropertyName);
         rawSegmentConstructorBodyBuilder.append(" = ");
         rawSegmentConstructorBodyBuilder.append(dataElementPropertyName);
-        rawSegmentConstructorBodyBuilder.append(";\n");
+        rawSegmentConstructorBodyBuilder.append(";\n");*/
     }
 
     private void appendToRawSegmentBodyBuilder(StringBuilder toRawSegmentBodyBuilder, int dataElementIndex, String dataElementPropertyName, DataElementDefinition dataElementDefinition) {
         List<String> dataElementComponentNames = dataElementDefinition.getComponentNames();
-        toRawSegmentBodyBuilder.append("if (");
+        /*toRawSegmentBodyBuilder.append("if (");
         toRawSegmentBodyBuilder.append(dataElementPropertyName);
-        toRawSegmentBodyBuilder.append(" != null) {\n");
+        toRawSegmentBodyBuilder.append(" != null) {\n");*/
         for (int dataElementComponentIndex = 0; dataElementComponentIndex < dataElementComponentNames.size(); dataElementComponentIndex++) {
             toRawSegmentBodyBuilder.append("rawSegment.setComponentDataElement(");
             toRawSegmentBodyBuilder.append(dataElementIndex);
@@ -281,7 +299,7 @@ public class SegmentSourceGenerator {
             toRawSegmentBodyBuilder.append(compositeDataElementGetterMethod);
             toRawSegmentBodyBuilder.append("());\n");
         }
-        toRawSegmentBodyBuilder.append("}\n");
+        //toRawSegmentBodyBuilder.append("}\n");
     }
 
     private String buildClassJavaDocText(SegmentDefinition segmentDefinition) {

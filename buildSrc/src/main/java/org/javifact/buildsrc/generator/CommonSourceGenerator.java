@@ -117,20 +117,37 @@ public class CommonSourceGenerator {
     public void addCustomTypePropertyWithJavaDoc(JavaClassSource javaClassSource, String propertyName, String formattedName, JavaType<?> javaType) {
         javaClassSource.addProperty(javaType, propertyName);
         addJavaDocForProperty(javaClassSource, propertyName, formattedName);
-        //TODO: Change to final property with a getter
-        /*StringBuilder fieldTextBuilder = new StringBuilder();
+     }
+
+    public void addFinalFieldWithGetter(JavaClassSource javaClassSource, String fieldName, String formattedName, JavaType<?> javaType) {
+        // add the final field
+        StringBuilder fieldTextBuilder = new StringBuilder();
         fieldTextBuilder.append("private final " );
         fieldTextBuilder.append(javaType.getCanonicalName());
         fieldTextBuilder.append(' ');
-        fieldTextBuilder.append(propertyName);
+        fieldTextBuilder.append(fieldName);
         fieldTextBuilder.append(" = new ");
         fieldTextBuilder.append(javaType.getCanonicalName());
         fieldTextBuilder.append("();");
         String fieldText = fieldTextBuilder.toString();
-        FieldSource<JavaClassSource> fieldSource = javaClassSource.addField(fieldText);*/
+        javaClassSource.addField(fieldText);
 
+        String getMethodName = toGetterMethodText(fieldName);
+        MethodSource<JavaClassSource> getMethod = javaClassSource.addMethod();
+        getMethod.setPublic();
+        getMethod.setReturnType(javaType);
+        getMethod.setName(getMethodName);
 
-     }
+        StringBuilder getMethodBodyBuilder = new StringBuilder();
+        getMethodBodyBuilder.append("return ");
+        getMethodBodyBuilder.append(fieldName);
+        getMethodBodyBuilder.append(";\n");
+        String getMethodBody = getMethodBodyBuilder.toString();
+        getMethod.setBody(getMethodBody);
+
+        getMethod.getJavaDoc().setText(buildGetMethodJavaDocText(formattedName));
+        getMethod.getJavaDoc().addTagValue("@return", buildGetMethodReturnJavaDocText(formattedName));
+    }
 
     private void addJavaDocForProperty(JavaClassSource javaClassSource, String propertyName, String formattedName) {
         // Add Javadoc for get method

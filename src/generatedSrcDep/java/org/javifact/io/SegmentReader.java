@@ -2,6 +2,7 @@ package org.javifact.io;
 
 import org.javifact.segment.EdifactSeparators;
 import org.javifact.segment.RawSegment;
+import org.javifact.segment.Segment;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
@@ -41,14 +42,14 @@ public class SegmentReader extends Reader {
         rawSegmentReader.close();
     }
 
-    public Object readSegment() throws IOException {
+    public Segment readSegment() throws IOException {
         RawSegment rawSegment = rawSegmentReader.readRawSegment();
-        String segmentName = rawSegment.getSegmentCode();
+        String segmentName = rawSegment.getSegmentType();
         String qualifiedSegmentClassName = SEGMENT_PACKAGE + "." + segmentName.toUpperCase();
-        Object segment;
+        Segment segment;
         try {
-            Class<?> segmentClass = Class.forName(qualifiedSegmentClassName);
-            Constructor<?> constructor = segmentClass.getConstructor(RawSegment.class);
+            Class<? extends Segment> segmentClass = (Class<? extends Segment>)(Class.forName(qualifiedSegmentClassName));
+            Constructor<? extends Segment> constructor = segmentClass.getConstructor(RawSegment.class);
             segment = constructor.newInstance(rawSegment);
         } catch (ClassNotFoundException c) {
             segment = rawSegment;
@@ -90,7 +91,7 @@ public class SegmentReader extends Reader {
         InputStream inputStream = new ByteArrayInputStream(data.getBytes());
         Reader reader = new InputStreamReader(inputStream);
         SegmentReader rawSegmentReader = new SegmentReader(reader);
-        List<Object> segments = new ArrayList<Object>();
+        List<Segment> segments = new ArrayList<Segment>();
         try {
             while (true) {
                 segments.add(rawSegmentReader.readSegment());
@@ -99,5 +100,7 @@ public class SegmentReader extends Reader {
             e.printStackTrace();
         }
         System.out.println("done");
+
+
     }
 }

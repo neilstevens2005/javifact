@@ -5,6 +5,8 @@ package org.javifact.segment;
  */
 public interface Segment {
 
+    String getSegmentType();
+
     String toEdifactString(EdifactSeparators edifactSeparators);
 
 }

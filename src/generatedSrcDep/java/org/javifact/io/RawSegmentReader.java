@@ -36,7 +36,7 @@ public class RawSegmentReader extends Reader {
     public RawSegment readRawSegment() throws IOException {
         StringBuilder segmentDataBuilder = new StringBuilder();
         int dataRead;
-        boolean escaped = false;
+        boolean escaped;
         do {
             dataRead = read();
             if (dataRead == -1) {
