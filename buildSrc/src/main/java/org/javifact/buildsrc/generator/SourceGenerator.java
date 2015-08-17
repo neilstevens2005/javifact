@@ -25,18 +25,28 @@ public class SourceGenerator {
     private final Path segmentDefinitionDirectory;
     private final Path messageDefinitionDirectory;
     private final Path generatedSourceDirectory;
+    private final String subPackageName;
 
-    public SourceGenerator(Path segmentDefinitionDirectory, Path messageDefinitionDirectory, Path generatedSourceDirectory) {
+    public SourceGenerator(Path segmentDefinitionDirectory, Path messageDefinitionDirectory, Path generatedSourceDirectory, String subPackageName) {
         this.segmentDefinitionDirectory = segmentDefinitionDirectory;
         this.messageDefinitionDirectory = messageDefinitionDirectory;
         this.generatedSourceDirectory = generatedSourceDirectory;
+        this.subPackageName = subPackageName;
     }
 
     public void generate() throws IOException, InvalidSegmentException {
         System.out.println("generate " + segmentDefinitionDirectory);
         Path outDir = makeOutputDir();
         SegmentFileReader segmentFileReader = new SegmentFileReader();
-        SegmentSourceGenerator segmentSourceGenerator = new SegmentSourceGenerator(new CommonSourceGenerator());
+
+        String packageName;
+        if (subPackageName == null) {
+            packageName = SEGMENT_PACAKAGE;
+        } else {
+            packageName = SEGMENT_PACAKAGE + "." + subPackageName;
+        }
+
+        SegmentSourceGenerator segmentSourceGenerator = new SegmentSourceGenerator(new CommonSourceGenerator(), packageName);
         for (File segmentDefinitionFile : segmentDefinitionDirectory.toFile().listFiles()) {
             //if (segmentDefinitionFile.getName().equals("cux.txt")) {
             System.out.println("Reading segment definition file:" + segmentDefinitionFile.getName());
@@ -53,7 +63,12 @@ public class SourceGenerator {
     private Path makeOutputDir() throws IOException {
         //Path classOutputDir = Paths.get(generatedSourceDirectory);
         System.out.println("Path = " + generatedSourceDirectory);
-        String[] packageSubDirectories = SEGMENT_PACAKAGE.split("\\.");
+        String[] packageSubDirectories;
+        if (subPackageName == null) {
+            packageSubDirectories = SEGMENT_PACAKAGE.split("\\.");
+        } else {
+            packageSubDirectories = (SEGMENT_PACAKAGE + "." + subPackageName).split("\\.");
+        }
         Path packageSubDir = Paths.get(packageSubDirectories[0], Arrays.copyOfRange(packageSubDirectories, 1, packageSubDirectories.length));
         Path path = generatedSourceDirectory.resolve(packageSubDir);
         if (Files.exists(path)) {

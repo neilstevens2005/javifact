@@ -18,16 +18,20 @@ public class EdifactReader extends Reader {
     private final static String SEGMENT_PACKAGE = "org.javifact.segment";
 
     private final Reader reader;
-    private final EdifactSeparators edifactSeparators;
+    private final String releaseSegmentPackage;
+    private EdifactSeparators edifactSeparators;
+    private final boolean overrideUna;
 
-    public EdifactReader(Reader reader) {
-        this(reader, new EdifactSeparators.Builder().build());
+    public EdifactReader(Reader reader, String edifactRelease) {
+        this(reader, edifactRelease, new EdifactSeparators.Builder().build(), false);
     }
 
-    public EdifactReader(Reader reader, EdifactSeparators edifactSeparators) {
+    public EdifactReader(Reader reader, String edifactRelease, EdifactSeparators edifactSeparators, boolean overrideUna) {
         super(reader);
         this.reader = reader;
+        this.releaseSegmentPackage = SEGMENT_PACKAGE + "." + edifactRelease.toLowerCase();
         this.edifactSeparators = edifactSeparators;
+        this.overrideUna = overrideUna;
     }
 
     @Override
@@ -64,15 +68,30 @@ public class EdifactReader extends Reader {
     public Segment readSegment() throws IOException {
         RawSegment rawSegment = readRawSegment();
         String segmentName = rawSegment.getSegmentType();
-        String qualifiedSegmentClassName = SEGMENT_PACKAGE + "." + segmentName.toUpperCase();
+        // first try to convert segment to release specific segment
+        String qualifiedSegmentClassName = releaseSegmentPackage + "." + segmentName.toUpperCase();
         Segment segment;
         try {
             Class<? extends Segment> segmentClass = (Class<? extends Segment>)(Class.forName(qualifiedSegmentClassName));
             Constructor<? extends Segment> constructor = segmentClass.getConstructor(RawSegment.class);
             segment = constructor.newInstance(rawSegment);
         } catch (ClassNotFoundException c) {
-            segment = rawSegment;
+            // if this can not be done try converting it to a non-release-specific segment (UNA, UNB etc)
+            qualifiedSegmentClassName = SEGMENT_PACKAGE + "." + segmentName.toUpperCase();
+            try {
+                Class<? extends Segment> segmentClass = (Class<? extends Segment>)(Class.forName(qualifiedSegmentClassName));
+                Constructor<? extends Segment> constructor = segmentClass.getConstructor(RawSegment.class);
+                segment = constructor.newInstance(rawSegment);
+            } catch (ClassNotFoundException c2) {
+                // as a last resort convert it to a raw segment
+                segment = rawSegment;
+
+            } catch (Exception e) {
+                // Unreachable (hopefully)
+                throw new AssertionError(e);
+            }
         } catch (Exception e) {
+            // Unreachable (hopefully)
             throw new AssertionError(e);
         }
         return segment;
@@ -128,7 +147,7 @@ public class EdifactReader extends Reader {
                 //"UNZ+1+00000000000778'";
         InputStream inputStream = new ByteArrayInputStream(data.getBytes());
         Reader reader = new InputStreamReader(inputStream);
-        EdifactReader edifactReader = new EdifactReader(reader);
+        EdifactReader edifactReader = new EdifactReader(reader, "d96a");
         RawMessage rawMessage = edifactReader.readRawMessage();
         System.out.println(rawMessage.toEdifactString());
     }

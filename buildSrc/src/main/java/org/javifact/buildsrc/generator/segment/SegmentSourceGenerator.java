@@ -20,12 +20,14 @@ import java.util.*;
  */
 public class SegmentSourceGenerator {
 
-    public final static String PACKAGE = "org.javifact.segment";
+    public final static String BASE_SEGMENT_PACKAGE = "org.javifact.segment";
 
     public final CommonSourceGenerator commonSourceGenerator;
+    private final String packageName;
 
-    public SegmentSourceGenerator(CommonSourceGenerator commonSourceGenerator) {
+    public SegmentSourceGenerator(CommonSourceGenerator commonSourceGenerator, String packageName) {
         this.commonSourceGenerator = commonSourceGenerator;
+        this.packageName = packageName;
     }
 
     public String generateSource(SegmentDefinition segmentDefinition) throws InvalidSegmentException {
@@ -33,11 +35,11 @@ public class SegmentSourceGenerator {
 
         // create class
         JavaClassSource segmentClass = Roaster.create(JavaClassSource.class);
-        segmentClass.setPackage(PACKAGE);
+        segmentClass.setPackage(packageName);
         String segmentClassName = segmentDefinition.getName().toUpperCase();
         segmentClass.setName(segmentClassName);
-        segmentClass.addInterface(PACKAGE + ".Segment");
-        segmentClass.setSuperType(PACKAGE + ".AbstractSegment");
+        segmentClass.addInterface(BASE_SEGMENT_PACKAGE + ".Segment");
+        segmentClass.setSuperType(BASE_SEGMENT_PACKAGE + ".AbstractSegment");
 
         // Add JavaDoc
         JavaDocSource<JavaClassSource> classJavaDoc = segmentClass.getJavaDoc();

@@ -11,7 +11,7 @@ import java.util.List;
 public class RawMessage extends AbstractMessage implements Message {
 
     private UNH unh;
-    private List<Segment> messageSegments;
+    private List<Segment> userDataSegmentsSegments;
     private UNT unt;
 
     public RawMessage() {
@@ -20,7 +20,7 @@ public class RawMessage extends AbstractMessage implements Message {
 
     public RawMessage(UNH unh, List<Segment> messageSegments, UNT unt) {
         this.unh = unh;
-        this.messageSegments = new ArrayList<>(messageSegments);
+        this.userDataSegmentsSegments = new ArrayList<>(messageSegments);
         this.unt = unt;
     }
 
@@ -32,12 +32,12 @@ public class RawMessage extends AbstractMessage implements Message {
         this.unh = unh;
     }
 
-    public List<Segment> getMessageSegments() {
-        return messageSegments;
+    public List<Segment> getUserDataSegmentsSegments() {
+        return userDataSegmentsSegments;
     }
 
-    public void setMessageSegments(List<Segment> messageSegments) {
-        this.messageSegments = messageSegments;
+    public void setUserDataSegmentsSegments(List<Segment> userDataSegmentsSegments) {
+        this.userDataSegmentsSegments = userDataSegmentsSegments;
     }
 
     public UNT getUnt() {

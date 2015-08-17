@@ -1,0 +1,8 @@
+      UNZ    INTERCHANGE TRAILER
+
+      Function: To end and check the completeness of an interchange.
+
+010   0036  INTERCHANGE CONTROL COUNT                             M  n..6
+
+020   0020  INTERCHANGE CONTROL REFERENCE                         M  an..14
+

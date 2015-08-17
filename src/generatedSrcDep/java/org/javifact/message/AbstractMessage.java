@@ -22,7 +22,7 @@ public abstract class AbstractMessage implements Message {
         StringBuilder edifactStringBuilder = new StringBuilder();
         UNH unh = rawMessage.getUnh();
         edifactStringBuilder.append(unh.toEdifactString(edifactSeparators));
-        List<Segment> messageSegments = rawMessage.getMessageSegments();
+        List<Segment> messageSegments = rawMessage.getUserDataSegmentsSegments();
         for (Segment segment : messageSegments) {
             edifactStringBuilder.append(segment.toEdifactString(edifactSeparators));
         }

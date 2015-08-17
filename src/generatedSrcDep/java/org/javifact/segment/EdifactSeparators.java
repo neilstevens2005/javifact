@@ -47,24 +47,29 @@ public class EdifactSeparators {
         private char decimalMark = '.';
         private char releaseCharacter = '?';
 
-        public void segmentTerminator(char segmentTerminator) {
+        public Builder segmentTerminator(char segmentTerminator) {
             this.segmentTerminator = segmentTerminator;
+            return this;
         }
 
-        public void dataElementSeparator(char dataElementSeparator) {
+        public Builder dataElementSeparator(char dataElementSeparator) {
             this.dataElementSeparator = dataElementSeparator;
+            return this;
         }
 
-        public void componentDataElementSeparator(char componentDataElementSeparator) {
+        public Builder componentDataElementSeparator(char componentDataElementSeparator) {
             this.componentDataElementSeparator = componentDataElementSeparator;
+            return this;
         }
 
-        public void decimalMark(char decimalMark) {
+        public Builder decimalMark(char decimalMark) {
             this.decimalMark = decimalMark;
+            return this;
         }
 
-        public void releaseCharacter(char releaseCharacter) {
+        public Builder releaseCharacter(char releaseCharacter) {
             this.releaseCharacter = releaseCharacter;
+            return this;
         }
 
         public EdifactSeparators build() {

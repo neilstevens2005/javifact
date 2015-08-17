@@ -1,0 +1,7 @@
+      UNE    FUNCTIONAL GROUP TRAILER
+
+      Function: To end and check the completeness of a functional group.
+
+010   0060  NUMBER OF MESSAGES                                    M  n..6
+
+020   0048  FUNCTIONAL GROUP REFERENCE NUMBER                     M  an..14
