@@ -15,6 +15,10 @@ public class UNA implements Segment {
         edifactSeparators = new EdifactSeparators.Builder().build();
     }
 
+    public UNA(RawSegment rawSegment) throws InvalidSegmentException {
+        this(rawSegment.getUnaEdifactData());
+    }
+
     public UNA(String edifactString) throws InvalidSegmentException {
         if (edifactString.length() < EXPECTED_UNA_EDIFACT_STRING_LENGTH) {
             throw new InvalidSegmentException("Invalid UNA Edifact data: " + edifactString);

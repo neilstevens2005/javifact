@@ -9,4 +9,5 @@ public interface Segment {
 
     String toEdifactString(EdifactSeparators edifactSeparators);
 
+
 }

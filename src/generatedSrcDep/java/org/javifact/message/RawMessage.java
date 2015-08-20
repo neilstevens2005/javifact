@@ -54,9 +54,15 @@ public class RawMessage extends AbstractMessage implements Message {
         return null;
     }
 
-
     @Override
     protected RawMessage toRawMessage() {
         return this;
+    }
+
+    @Override
+    public void setUnt() {
+        UNT unt = new UNT();
+        unt.setNumberOfSegmentsInTheMessage(Integer.toString(userDataSegmentsSegments.size()));
+        unt.setMessageReferenceNumber(unh.getMessageReferenceNumber());
     }
 }

@@ -1,5 +1,8 @@
 package org.javifact.segment;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by neil on 02/08/15.
  */
@@ -28,4 +31,6 @@ public abstract class AbstractSegment implements Segment {
      * @return The raw segment created.
      */
     protected abstract RawSegment toRawSegment();
+
+
 }

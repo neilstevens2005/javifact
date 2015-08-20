@@ -48,6 +48,8 @@ public class RawSegment extends AbstractSegment implements Segment {
     //private final static List<String> SINGLE_EMPTY_STRING_LIST = Lists.newArrayList("");
     private final List<List<String>> componentDataElements = new ArrayList<>();
 
+    private String unaEdifactData;
+
     public RawSegment(){
 
     }
@@ -55,24 +57,32 @@ public class RawSegment extends AbstractSegment implements Segment {
     public RawSegment(EdifactSeparators edifactSeparators, String edifactData) {
         segmentType = edifactData.substring(0, 3);
 
-        DataElementComponentValueAndTerminator.Terminator terminator;
-        int dataIndex = 0;
-        int componentIndex = 0;
-        int offset = 4;
-        do {
-            DataElementComponentValueAndTerminator dataElementComponentValueAndTerminator = readNextDataElement(edifactData, offset, edifactSeparators);
-            String value = toUnescapedValue(dataElementComponentValueAndTerminator.getValue(), edifactSeparators);
-            setComponentDataElement(dataIndex, componentIndex, value);
-            terminator = dataElementComponentValueAndTerminator.getTerminator();
-            if (terminator == DataElementComponentValueAndTerminator.Terminator.DATA_SEPARATOR) {
-                dataIndex++;
-                componentIndex = 0;
-            } else if (terminator == DataElementComponentValueAndTerminator.Terminator.COMPONENT_SEPARATOR) {
-                componentIndex++;
-            }
-            offset = dataElementComponentValueAndTerminator.getEndIndex() + 1; // +1 to move past separator
-        } while (terminator != DataElementComponentValueAndTerminator.Terminator.SEGMENT_SEPARATOR
-                && terminator != DataElementComponentValueAndTerminator.Terminator.END_OF_STRING);
+        if (segmentType.equals("UNA")) {
+            unaEdifactData = edifactData;
+        } else {
+            DataElementComponentValueAndTerminator.Terminator terminator;
+            int dataIndex = 0;
+            int componentIndex = 0;
+            int offset = 4;
+            do {
+                DataElementComponentValueAndTerminator dataElementComponentValueAndTerminator = readNextDataElement(edifactData, offset, edifactSeparators);
+                String value = toUnescapedValue(dataElementComponentValueAndTerminator.getValue(), edifactSeparators);
+                setComponentDataElement(dataIndex, componentIndex, value);
+                terminator = dataElementComponentValueAndTerminator.getTerminator();
+                if (terminator == DataElementComponentValueAndTerminator.Terminator.DATA_SEPARATOR) {
+                    dataIndex++;
+                    componentIndex = 0;
+                } else if (terminator == DataElementComponentValueAndTerminator.Terminator.COMPONENT_SEPARATOR) {
+                    componentIndex++;
+                }
+                offset = dataElementComponentValueAndTerminator.getEndIndex() + 1; // +1 to move past separator
+            } while (terminator != DataElementComponentValueAndTerminator.Terminator.SEGMENT_SEPARATOR
+                    && terminator != DataElementComponentValueAndTerminator.Terminator.END_OF_STRING);
+        }
+    }
+
+    public String getUnaEdifactData() {
+        return unaEdifactData;
     }
 
     /*public RawSegment(EdifactSeparators edifactSeparators, Reader edifactData) {
@@ -207,7 +217,7 @@ public class RawSegment extends AbstractSegment implements Segment {
             char charAtIndex = escappedValue.charAt(index);
             if (escaped) {
                 // TODO: log warning if not separator
-                unescappedValueBuilder.append(charAtIndex);
+                //unescappedValueBuilder.append(charAtIndex);
                 escaped = false;
             } else if (charAtIndex == edifactSeparators.getReleaseCharacter()) {
                 escaped = true;
@@ -215,7 +225,9 @@ public class RawSegment extends AbstractSegment implements Segment {
                 unescappedValueBuilder.append(charAtIndex);
             }
         }
-        return escappedValue;
+        return unescappedValueBuilder.toString();
+
+
     }
 
     private String toEscappedValue(String unescappedValue, EdifactSeparators edifactSeparators) {
@@ -237,7 +249,7 @@ public class RawSegment extends AbstractSegment implements Segment {
 
     public static void main(String[] args) {
         EdifactSeparators edifactSeparators = new EdifactSeparators.Builder().build();
-        RawSegment rawSegment = new RawSegment(edifactSeparators, "UNB+IATB:1+6XPPC+LHPPC+940101:0950+1'");
+        RawSegment rawSegment = new RawSegment(edifactSeparators, "FTX+AFM+1++X?'Path 2.0 Programmer?'s Reference'");
         System.out.println("parsed");
         System.out.println(rawSegment.toEdifactString(edifactSeparators));
     }
@@ -272,5 +284,7 @@ public class RawSegment extends AbstractSegment implements Segment {
             }
         } while (elementRemoved);
     }
+
+
 
 }
